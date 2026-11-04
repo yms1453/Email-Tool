@@ -1141,15 +1141,27 @@ function kontoFormHtml(k = {}) {
     <div class="feld"><label for="kPw">Passwort${k.id ? ' (leer lassen = unverändert)' : ''}</label><input id="kPw" type="password" autocomplete="new-password" ${k.id ? '' : 'required'}></div>
     <div class="reihe3"><div class="feld"><label for="kImap">IMAP-Server</label><input id="kImap" value="${esc(k.imap_host || '')}" required></div><div class="feld"><label for="kImapP">Port</label><input id="kImapP" type="number" value="${k.imap_port || 993}"></div></div>
     <div class="reihe3"><div class="feld"><label for="kSmtp">SMTP-Server (Senden)</label><input id="kSmtp" value="${esc(k.smtp_host || '')}" required></div><div class="feld"><label for="kSmtpP">Port</label><input id="kSmtpP" type="number" value="${k.smtp_port || 465}"></div></div>
+    ${k.id ? '' : teilenHtml()}
     <p class="hinweis">Das Passwort wird verschlüsselt auf eurem Server gespeichert. Beim Speichern wird die Verbindung geprüft (Empfangen und Senden), danach wird das Postfach im Hintergrund geladen.</p>
     <div style="display:flex;gap:8px;align-items:center"><span id="kMeldung" class="hinweis" style="margin-right:auto"></span><button type="button" class="btn" data-abbr>Abbrechen</button><button class="btn haupt" id="kSpeichern">${k.id ? 'Speichern' : 'Verbinden & speichern'}</button></div>
   </form>`;
+}
+const RECHT_WAHL = [['', 'kein Zugriff'], ['lesen', 'Lesen'], ['schreiben', 'Lesen + Antworten'], ['verwalten', 'Verwalten']];
+// Beim Verknüpfen gleich festlegen, wer das Postfach sieht – Standard privat
+function teilenHtml() {
+  const andere = S.team.filter((t) => t.email !== S.ich);
+  if (!andere.length) return '';
+  return `<div class="feld"><label>Wer sieht das Postfach?</label>
+    <div class="wahlreihe"><button class="chip" type="button" data-teilen="privat" aria-pressed="true">Nur ich</button><button class="chip" type="button" data-teilen="team" aria-pressed="false">Mit dem Team teilen</button></div>
+    <div id="kTeilen" hidden><table class="rechte-tab"><tbody>${andere.map((t) => `<tr><td>${teamAva(t.email)} ${esc(t.name)}</td><td style="text-align:right"><select data-neu-recht="${esc(t.email)}" aria-label="Recht für ${esc(t.name)}">
+      ${RECHT_WAHL.map(([v, l]) => `<option value="${v}"${v === 'schreiben' ? ' selected' : ''}>${l}</option>`).join('')}</select></td></tr>`).join('')}</tbody></table></div>
+    <span class="hinweis">Admins sehen alle Postfächer. Ändern kannst du das später unter „Rechte“.</span></div>`;
 }
 async function rechteHtml(k) {
   const d = await api('GET', `/konten/${k.id}/rechte`);
   const r = Object.fromEntries(d.rechte.map((x) => [x.email, x.recht]));
   return `<table class="rechte-tab"><tbody>${S.team.filter((t) => t.email !== d.besitzer).map((t) => `<tr><td>${teamAva(t.email)} ${esc(t.name)}</td><td style="text-align:right"><select data-recht="${esc(t.email)}" aria-label="Recht für ${esc(t.name)}">
-    ${[['', 'kein Zugriff'], ['lesen', 'Lesen'], ['schreiben', 'Lesen + Antworten'], ['verwalten', 'Verwalten']].map(([v, l]) => `<option value="${v}"${(r[t.email] || '') === v ? ' selected' : ''}>${l}</option>`).join('')}</select></td></tr>`).join('')}
+    ${RECHT_WAHL.map(([v, l]) => `<option value="${v}"${(r[t.email] || '') === v ? ' selected' : ''}>${l}</option>`).join('')}</select></td></tr>`).join('')}
     <tr><td colspan="2" class="hinweis">Besitzer: ${esc(name(d.besitzer))} · Admins sehen alle Postfächer.</td></tr></tbody></table>
     <div style="display:flex;justify-content:flex-end;margin-top:8px"><button class="btn haupt" type="button" data-rechte-speichern="${k.id}">Rechte speichern</button></div>`;
 }
@@ -1230,6 +1242,8 @@ function einstellungen(tab = 'konten', neuVorlage = null) {
       const v = ev.target.closest('[data-server]');
       if (v) { const [ih, ip, sh, sp] = VORLAGEN_SERVER[v.dataset.server]; $('kImap').value = ih; $('kImapP').value = ip; $('kSmtp').value = sh; $('kSmtpP').value = sp; }
       if (ev.target.closest('[data-abbr]')) zeichnen();
+      const t = ev.target.closest('[data-teilen]');
+      if (t) { form.querySelectorAll('[data-teilen]').forEach((b) => b.setAttribute('aria-pressed', String(b === t))); $('kTeilen').hidden = t.dataset.teilen !== 'team'; }
     });
     $('kMail')?.addEventListener('input', () => { if (!$('kBen').dataset.geaendert) $('kBen').value = $('kMail').value; });
     $('kBen').addEventListener('input', () => { $('kBen').dataset.geaendert = '1'; });
@@ -1238,6 +1252,7 @@ function einstellungen(tab = 'konten', neuVorlage = null) {
       $('kSpeichern').disabled = true; $('kMeldung').style.color = ''; $('kMeldung').textContent = 'Verbindung wird geprüft …';
       const d = { name: $('kName').value, absender: $('kAbs').value, email: $('kMail').value, benutzer: $('kBen').value, imap_host: $('kImap').value, imap_port: $('kImapP').value, smtp_host: $('kSmtp').value, smtp_port: $('kSmtpP').value };
       if ($('kPw').value) d.passwort = $('kPw').value;
+      if (!k?.id && $('kTeilen') && !$('kTeilen').hidden) d.rechte = [...form.querySelectorAll('[data-neu-recht]')].filter((s) => s.value).map((s) => ({ email: s.dataset.neuRecht, recht: s.value }));
       try {
         if (k?.id) await api('PATCH', `/konten/${k.id}`, d); else await api('POST', '/konten', d);
         toast(k?.id ? 'Gespeichert' : 'Postfach verknüpft – Mails werden geladen');

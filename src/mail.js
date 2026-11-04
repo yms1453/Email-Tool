@@ -238,6 +238,14 @@ export function mailRouter({ io }) {
     return ordner;
   };
 
+  // Rechte eines Kontos komplett ersetzen – nur Team-Mitglieder, nie der Besitzer selbst
+  function rechteSetzen(k, rechte) {
+    const erlaubt = new Set(team().map((t) => t.email));
+    const liste = (Array.isArray(rechte) ? rechte : []).filter((r) => erlaubt.has(r?.email) && RECHTE.includes(r.recht) && r.email !== k.besitzer);
+    db.prepare('DELETE FROM mail_rechte WHERE konto_id = ?').run(k.id);
+    for (const r of liste) db.prepare('INSERT INTO mail_rechte (konto_id, email, recht) VALUES (?, ?, ?)').run(k.id, r.email, r.recht);
+  }
+
   router.post('/konten', async (req, res) => {
     const f = kontoFelder(req.body || {});
     if (!f.email.includes('@') || !f.imap_host || !f.smtp_host || !req.body?.passwort) return res.status(400).json({ fehler: 'E-Mail, Server und Passwort ausfüllen' });
@@ -247,6 +255,7 @@ export function mailRouter({ io }) {
       const r = db.prepare(`INSERT INTO mail_konten (name, email, absender, imap_host, imap_port, smtp_host, smtp_port, benutzer, passwort, besitzer,
           ordner_eingang, ordner_gesendet, ordner_spam) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
         .run(f.name || f.email, f.email, f.absender, f.imap_host, f.imap_port, f.smtp_host, f.smtp_port, f.benutzer, k.passwort, req.sitzung.sub, o.eingang, o.gesendet, o.spam);
+      rechteSetzen({ id: Number(r.lastInsertRowid), besitzer: req.sitzung.sub }, req.body.rechte);
       abgleichJetzt(Number(r.lastInsertRowid));
       res.json({ ok: true, id: Number(r.lastInsertRowid), ordner: o });
     } catch (e) {
@@ -297,10 +306,7 @@ export function mailRouter({ io }) {
   router.put('/konten/:id/rechte', (req, res) => {
     const k = konto(req, res, 'verwalten');
     if (!k) return;
-    const erlaubt = new Set(team().map((t) => t.email));
-    const liste = (req.body?.rechte || []).filter((r) => erlaubt.has(r.email) && RECHTE.includes(r.recht) && r.email !== k.besitzer);
-    db.prepare('DELETE FROM mail_rechte WHERE konto_id = ?').run(k.id);
-    for (const r of liste) db.prepare('INSERT INTO mail_rechte (konto_id, email, recht) VALUES (?, ?, ?)').run(k.id, r.email, r.recht);
+    rechteSetzen(k, req.body?.rechte);
     res.json({ ok: true });
   });
 
