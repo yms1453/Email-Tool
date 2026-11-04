@@ -284,7 +284,7 @@ function seiteZeichnen() {
       <button class="ikon" type="button" data-einst="darstellung" aria-label="Darstellung" title="Darstellung">${ic('regler')}</button>
     </div>`;
   const offen = ANSICHTEN[0].z();
-  document.title = `${offen ? `(${offen}) ` : ''}Mail · ${window.MARKE?.name || 'Teampost'}`;
+  document.title = `${offen ? `(${offen}) ` : ''}Mail · ${window.MARKE?.name || 'SANDA Mail'}`;
 }
 
 // ---------- Listenkopf, Tageszahlen, Filter, Stapel ----------

@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { DATEN } from './config.js';
 
-export const db = new DatabaseSync(join(DATEN, 'teampost.db'));
+export const db = new DatabaseSync(join(DATEN, 'sanda-mail.db'));
 db.exec(`PRAGMA journal_mode = WAL;
 CREATE TABLE IF NOT EXISTS nutzer (
   id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL UNIQUE, passwort_hash TEXT NOT NULL, name TEXT,

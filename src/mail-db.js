@@ -72,7 +72,7 @@ export const ERLEDIGT = ['unnoetig', 'spam', 'bearbeitet', 'geantwortet'];
 export const RECHTE = ['lesen', 'schreiben', 'verwalten'];
 
 // ---------- Passwörter: AES-256-GCM, Schlüssel aus MAIL_SCHLUESSEL (sonst aus JWT_SECRET abgeleitet) ----------
-const schluessel = () => crypto.createHash('sha256').update(env.MAIL_SCHLUESSEL || `teampost-mail|${env.JWT_SECRET}`).digest();
+const schluessel = () => crypto.createHash('sha256').update(env.MAIL_SCHLUESSEL || `sanda-mail-mail|${env.JWT_SECRET}`).digest();
 export function verschluesseln(klar) {
   const iv = crypto.randomBytes(12);
   const c = crypto.createCipheriv('aes-256-gcm', schluessel(), iv);

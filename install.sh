@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
-# Teampost installieren oder aktualisieren (Ubuntu/Debian, als root).
+# SANDA Mail installieren oder aktualisieren (Ubuntu/Debian, als root).
 #
 #   curl -fsSL https://raw.githubusercontent.com/yms1453/Email-Tool/main/install.sh | sudo bash
 #
 # Ohne Rückfragen:
 #   curl -fsSL …/install.sh | sudo DOMAIN=mail.firma.de EMAIL=it@firma.de APP_NAME="Firma Mail" bash
 #
-# Installiert Docker (falls nötig), legt Teampost nach /opt/teampost und startet es hinter Caddy mit HTTPS für DOMAIN.
+# Installiert Docker (falls nötig), legt SANDA Mail nach /opt/sanda-mail und startet es hinter Caddy mit HTTPS für DOMAIN.
 # Erneut ausführen = Update auf den neuesten Stand; .env, Caddyfile und alle Daten (Docker-Volume) bleiben erhalten.
 set -euo pipefail
 
 REPO="${REPO:-yms1453/Email-Tool}"
 ZWEIG="${ZWEIG:-main}"
-ZIEL="${ZIEL:-/opt/teampost}"
+ZIEL="${ZIEL:-/opt/sanda-mail}"
 
 blau() { printf '\033[1;34m%s\033[0m\n' "$*"; }
 fehler() { printf '\033[1;31mFehler: %s\033[0m\n' "$*" >&2; exit 1; }
@@ -28,7 +28,7 @@ frage() {
 [ "$(id -u)" -eq 0 ] || fehler "Bitte als root ausführen (… | sudo bash)"
 command -v apt-get >/dev/null || fehler "Dieses Skript unterstützt Ubuntu/Debian. Andere Systeme: siehe README (docker compose up -d)."
 
-blau "==> Teampost-Installation"
+blau "==> SANDA Mail-Installation"
 
 # ---------- Docker ----------
 if ! command -v docker >/dev/null || ! docker compose version >/dev/null 2>&1; then
@@ -51,10 +51,10 @@ cd "$ZIEL"
 
 # ---------- Einstellungen (nur beim ersten Mal) ----------
 if [ ! -f .env ]; then
-  DOMAIN="${DOMAIN:-$(frage 'Domain für Teampost (DNS muss schon auf diesen Server zeigen), z. B. mail.firma.de')}"
+  DOMAIN="${DOMAIN:-$(frage 'Domain für SANDA Mail (DNS muss schon auf diesen Server zeigen), z. B. mail.firma.de')}"
   [ -n "$DOMAIN" ] || fehler "Ohne Domain kein HTTPS. Mit DOMAIN=… erneut starten."
   EMAIL="${EMAIL:-$(frage 'E-Mail für Let’s-Encrypt-Zertifikat und Push' "admin@${DOMAIN#*.}")}"
-  APP_NAME="${APP_NAME:-$(frage 'Name der App' 'Teampost')}"
+  APP_NAME="${APP_NAME:-$(frage 'Name der App' 'SANDA Mail')}"
   APP_FARBE="${APP_FARBE:-#2563EB}"
   # Geheimnisse hier erzeugen und in .env festhalten – nie wieder ändern, sonst sind die Postfach-Passwörter unlesbar
   umask 077
@@ -65,7 +65,7 @@ DOMAIN=${DOMAIN}
 JWT_SECRET=$(head -c 48 /dev/urandom | base64 | tr -d '\n/+=')
 COOKIE_SECURE=true
 TRUST_PROXY=true
-TEAMPOST_BIND=127.0.0.1
+SANDA_MAIL_BIND=127.0.0.1
 VAPID_KONTAKT=mailto:${EMAIL}
 EOF
   cat > Caddyfile <<EOF
@@ -75,7 +75,7 @@ EOF
 
 ${DOMAIN} {
 	encode zstd gzip
-	reverse_proxy teampost:3000
+	reverse_proxy sanda-mail:3000
 }
 EOF
   umask 022
@@ -83,12 +83,12 @@ fi
 DOMAIN="$(grep -E '^DOMAIN=' .env | cut -d= -f2-)"
 
 # ---------- Start ----------
-blau "==> Teampost wird gebaut und gestartet (dauert beim ersten Mal 1–2 Minuten)"
+blau "==> SANDA Mail wird gebaut und gestartet (dauert beim ersten Mal 1–2 Minuten)"
 docker compose -f docker-compose.yml -f docker-compose.https.yml up -d --build --remove-orphans
 docker image prune -f >/dev/null 2>&1 || true
 
 for _ in $(seq 1 30); do
-  docker compose exec -T teampost wget -qO- http://127.0.0.1:3000/gesund >/dev/null 2>&1 && break
+  docker compose exec -T sanda-mail wget -qO- http://127.0.0.1:3000/gesund >/dev/null 2>&1 && break
   sleep 2
 done
 
@@ -98,7 +98,7 @@ echo "  Öffnen:        https://${DOMAIN}"
 echo "  Beim ersten Aufruf legst du dort den ersten Admin an."
 echo
 echo "  Update:        dieses Installationsskript erneut ausführen"
-echo "  Logins:        cd ${ZIEL} && docker compose exec teampost node scripts/nutzer.js liste"
-echo "  Logs:          cd ${ZIEL} && docker compose logs -f teampost"
+echo "  Logins:        cd ${ZIEL} && docker compose exec sanda-mail node scripts/nutzer.js liste"
+echo "  Logs:          cd ${ZIEL} && docker compose logs -f sanda-mail"
 echo
 echo "  Wichtig: ${ZIEL}/.env sicher aufbewahren – ohne JWT_SECRET lassen sich die Postfach-Passwörter nicht mehr lesen."

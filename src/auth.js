@@ -6,7 +6,7 @@ import bcrypt from 'bcryptjs';
 import { APP, env } from './config.js';
 import { db } from './db.js';
 
-const COOKIE = 'teampost';
+const COOKIE = 'sanda-mail';
 export const ROLLEN = ['admin', 'nutzer'];
 
 export const nutzerAnzahl = () => db.prepare('SELECT count(*) n FROM nutzer').get().n;

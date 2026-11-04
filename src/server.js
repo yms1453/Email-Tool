@@ -1,4 +1,4 @@
-// Teampost: Express + Socket.io. Seiten: /login, /einrichten (nur solange es noch keinen Login gibt), /mail, /team (Admins).
+// SANDA Mail: Express + Socket.io. Seiten: /login, /einrichten (nur solange es noch keinen Login gibt), /mail, /team (Admins).
 // Jede Person hat einen eigenen Live-Raum (nutzer:<email>); die Mail-App schickt Signale nur an Personen mit Recht auf das Postfach.
 import { createServer } from 'node:http';
 import { join } from 'node:path';

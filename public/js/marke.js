@@ -9,6 +9,6 @@
     document.querySelectorAll('[data-app-name]').forEach((el) => { el.textContent = m.name; });
     if (document.title && !document.title.includes(m.name)) document.title = `${document.title} · ${m.name}`;
   };
-  try { const m = JSON.parse(localStorage.getItem('teampost-marke')); if (m) anwenden(m); } catch {}
-  fetch('/api/app').then((r) => r.json()).then((m) => { anwenden(m); try { localStorage.setItem('teampost-marke', JSON.stringify(m)); } catch {} }).catch(() => {});
+  try { const m = JSON.parse(localStorage.getItem('sanda-mail-marke')); if (m) anwenden(m); } catch {}
+  fetch('/api/app').then((r) => r.json()).then((m) => { anwenden(m); try { localStorage.setItem('sanda-mail-marke', JSON.stringify(m)); } catch {} }).catch(() => {});
 })();

@@ -1,5 +1,5 @@
 // Einstellungen aus der Umgebung bzw. aus .env im Projektordner. Fehlt das Sitzungs-Geheimnis, wird beim ersten Start
-// eines erzeugt und im Datenordner abgelegt – so läuft Teampost ohne Vorarbeit, übersteht aber Neustarts.
+// eines erzeugt und im Datenordner abgelegt – so läuft SANDA Mail ohne Vorarbeit, übersteht aber Neustarts.
 import crypto from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -20,7 +20,7 @@ if (!env.JWT_SECRET?.trim()) {
 
 const farbe = `#${String(env.APP_FARBE || '').trim().replace(/^#/, '')}`;
 export const APP = {
-  name: env.APP_NAME || 'Teampost',
+  name: env.APP_NAME || 'SANDA Mail',
   farbe: /^#[0-9a-f]{6}$/i.test(farbe) ? farbe : '#2563EB',
   port: Number(env.PORT || 3000),
   host: env.HOST || '0.0.0.0',

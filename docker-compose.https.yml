@@ -13,7 +13,7 @@ services:
       - caddy-daten:/data
       - caddy-config:/config
     depends_on:
-      - teampost
+      - sanda-mail
 
 volumes:
   caddy-daten:

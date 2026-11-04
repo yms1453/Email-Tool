@@ -144,7 +144,7 @@
     const reg = pushMoeglich() ? await Promise.race([navigator.serviceWorker.ready, new Promise((r) => setTimeout(() => r(null), 3000))]).catch(() => null) : null;
     let abo = reg ? await reg.pushManager.getSubscription().catch(() => null) : null;
 
-    const name = window.MARKE?.name || 'Teampost';
+    const name = window.MARKE?.name || 'SANDA Mail';
     const zeichnen = (status = '') => {
       const installTeil = istApp()
         ? '<div class="ok">✓ Läuft als App auf diesem Gerät.</div>'

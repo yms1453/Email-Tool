@@ -1,6 +1,6 @@
-# Teampost
+# SANDA Mail
 
-Gemeinsame Postfächer fürs Team – selbst gehostet, entwickelt von **SANDA**. Teampost verbindet beliebig viele IMAP/SMTP-Postfächer
+Gemeinsame Postfächer fürs Team – selbst gehostet, entwickelt von **SANDA**. SANDA Mail verbindet beliebig viele IMAP/SMTP-Postfächer
 (IONOS, Gmail, Outlook/Office 365, Strato, jeder andere Anbieter) und macht daraus einen geteilten Posteingang:
 wer hat welche Mail geöffnet, wer kümmert sich, was ist erledigt.
 
@@ -22,7 +22,7 @@ Voraussetzung: ein Server mit Ubuntu oder Debian, eine Domain (z. B. `mail.firma
 curl -fsSL https://raw.githubusercontent.com/yms1453/Email-Tool/main/install.sh | sudo bash
 ```
 
-Das Skript fragt nach Domain, E-Mail und App-Name, installiert Docker, startet Teampost und richtet HTTPS automatisch ein (Caddy + Let's Encrypt). Danach `https://<domain>` öffnen und den ersten Admin anlegen.
+Das Skript fragt nach Domain, E-Mail und App-Name, installiert Docker, startet SANDA Mail und richtet HTTPS automatisch ein (Caddy + Let's Encrypt). Danach `https://<domain>` öffnen und den ersten Admin anlegen.
 
 Ohne Rückfragen:
 
@@ -30,7 +30,7 @@ Ohne Rückfragen:
 curl -fsSL https://raw.githubusercontent.com/yms1453/Email-Tool/main/install.sh | sudo DOMAIN=mail.firma.de EMAIL=it@firma.de APP_NAME="Firma Mail" bash
 ```
 
-**Update**: denselben Befehl erneut ausführen – Einstellungen (`/opt/teampost/.env`) und Daten bleiben erhalten.
+**Update**: denselben Befehl erneut ausführen – Einstellungen (`/opt/sanda-mail/.env`) und Daten bleiben erhalten.
 
 ## Schnellstart mit Docker (ohne HTTPS)
 
@@ -65,7 +65,7 @@ PASSWORT='…' npm run nutzer -- passwort anna@firma.de
 npm run nutzer -- sperren anna@firma.de
 ```
 
-Im Docker-Container: `docker compose exec teampost node scripts/nutzer.js liste`
+Im Docker-Container: `docker compose exec sanda-mail node scripts/nutzer.js liste`
 
 ## Einstellungen
 
@@ -73,7 +73,7 @@ Alle optional, siehe [.env.example](.env.example).
 
 | Variable | Bedeutung | Standard |
 |---|---|---|
-| `APP_NAME` | Name in der Oberfläche | `Teampost` |
+| `APP_NAME` | Name in der Oberfläche | `SANDA Mail` |
 | `APP_FARBE` | Markenfarbe (Hex) | `#2563EB` |
 | `PORT`, `HOST` | Adresse des Servers | `3000`, `0.0.0.0` |
 | `DATA_DIR` | Datenbank, Anhänge, Schlüssel | `./data` (Docker: `/data`) |
@@ -98,7 +98,7 @@ mail.firma.de {
 
 ## Sicherung
 
-Alles Wichtige liegt in `DATA_DIR`: `teampost.db` (+ `-wal`/`-shm`), `mail-anhaenge/`, `geheimnis.txt`, `vapid.json`.
+Alles Wichtige liegt in `DATA_DIR`: `sanda-mail.db` (+ `-wal`/`-shm`), `mail-anhaenge/`, `geheimnis.txt`, `vapid.json`.
 Zum Sichern den Dienst kurz stoppen und den Ordner kopieren. Ohne `geheimnis.txt` sind die Postfach-Passwörter verloren,
 ohne `vapid.json` müssen alle Geräte Mitteilungen neu einschalten.
 
