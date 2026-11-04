@@ -1,43 +1,45 @@
-"""Erzeugt alle App-Symbole in public/app. Braucht Pillow.
-   Aufruf: python scripts/symbole.py
+"""Erzeugt alle App-Symbole (public/app) aus scripts/symbol-vorlage.webp. Braucht Pillow.
+   Aufruf: python scripts/symbole.py scripts/symbol-vorlage.webp public/app"""
+import sys
+from PIL import Image, ImageFilter
 
-   symbol-vorlage.webp  quadratisches Foto → App-Symbole, Favicon (volle Fläche, die Geräte runden selbst ab)
-   badge-vorlage.webp   Strichzeichnung auf Weiß → Mitteilungs-Badge (Android braucht eine einfarbige Form)"""
-from pathlib import Path
-from PIL import Image, ImageFilter, ImageOps
+quelle, ziel = sys.argv[1], sys.argv[2]
+BRAUN = (60, 42, 27)
+WEISS = (255, 255, 255)
 
-HIER = Path(__file__).resolve().parent
-ZIEL = HIER.parent / 'public' / 'app'
-
-foto = Image.open(HIER / 'symbol-vorlage.webp').convert('RGB')
-foto = ImageOps.fit(foto, (min(foto.size),) * 2, Image.LANCZOS)  # mittig quadratisch zuschneiden
+g = Image.open(quelle).convert('L')
+# Deckkraft aus Helligkeit: Hintergrund (~254) → 0, Linien (~45) → 255; entfernt Kompressionsrauschen
+alpha = g.point(lambda v: max(0, min(255, round((250 - v) * 255 / 190))))
+alpha = alpha.crop(alpha.getbbox())
 
 
-def symbol(groesse, ausschnitt=1.0):
-    """ausschnitt < 1 zoomt in die Bildmitte."""
-    rand = round(foto.width * (1 - ausschnitt) / 2)
-    bild = foto.crop((rand, rand, foto.width - rand, foto.height - rand))
-    return bild.resize((groesse, groesse), Image.LANCZOS)
+def symbol(groesse, anteil, hintergrund=WEISS, farbe=BRAUN, dicker=0):
+    """Katze mittig, Höhe = anteil der Bildgröße. hintergrund=None → transparent."""
+    gross = groesse * 4
+    h = round(gross * anteil)
+    b = round(alpha.width * h / alpha.height)
+    a = alpha.resize((b, h), Image.LANCZOS)
+    if dicker:
+        a = a.filter(ImageFilter.MaxFilter(dicker))
+    maske = Image.new('L', (gross, gross), 0)
+    maske.paste(a, ((gross - b) // 2, (gross - h) // 2))
+    maske = maske.resize((groesse, groesse), Image.LANCZOS)
+    if hintergrund is None:
+        bild = Image.new('RGBA', (groesse, groesse), farbe + (0,))
+        bild.putalpha(maske)
+        return bild
+    bild = Image.new('RGB', (groesse, groesse), hintergrund)
+    bild.paste(Image.new('RGB', (groesse, groesse), farbe), (0, 0), maske)
+    return bild
 
 
 def speichern(bild, name):
-    bild.save(ZIEL / name, optimize=True)
+    bild.save(f'{ziel}/{name}', optimize=True)
 
 
-speichern(symbol(192), 'icon-192.png')
-speichern(symbol(512), 'icon-512.png')
-speichern(symbol(512), 'icon-maskable-512.png')  # Foto füllt die Fläche, Masken schneiden nur Ränder ab
-speichern(symbol(180), 'apple-touch-icon.png')
-speichern(symbol(32, 0.8), 'favicon-32.png')     # enger Ausschnitt, damit das Gesicht bei 32 px erkennbar bleibt
-
-# Badge: nur Deckkraft zählt, Farbe setzt das System
-g = Image.open(HIER / 'badge-vorlage.webp').convert('L')
-alpha = g.point(lambda v: max(0, min(255, round((250 - v) * 255 / 190))))
-alpha = alpha.crop(alpha.getbbox())
-h = round(96 * 4 * 0.94)
-a = alpha.resize((round(alpha.width * h / alpha.height), h), Image.LANCZOS).filter(ImageFilter.MaxFilter(5))
-maske = Image.new('L', (96 * 4,) * 2, 0)
-maske.paste(a, ((96 * 4 - a.width) // 2, (96 * 4 - a.height) // 2))
-badge = Image.new('RGBA', (96, 96), (255, 255, 255, 0))
-badge.putalpha(maske.resize((96, 96), Image.LANCZOS))
-speichern(badge, 'badge-96.png')
+speichern(symbol(192, 0.92), 'icon-192.png')
+speichern(symbol(512, 0.92), 'icon-512.png')
+speichern(symbol(512, 0.74), 'icon-maskable-512.png')    # innerhalb der Sicherheitszone (Kreis, 80 %)
+speichern(symbol(180, 0.90), 'apple-touch-icon.png')
+speichern(symbol(32, 0.96, dicker=5), 'favicon-32.png')   # Linien verstärkt, sonst bei 32 px unsichtbar
+speichern(symbol(96, 0.94, None, WEISS, dicker=5), 'badge-96.png')  # Mitteilungs-Symbol: nur Form, weiß auf transparent
