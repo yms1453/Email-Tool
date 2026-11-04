@@ -10,7 +10,6 @@ import {
   ROLLEN, nurAdmin, nurAngemeldet, nutzerAktiv, nutzerAnzahl, nutzerListe, nutzerPruefen, nutzerSpeichern, sitzungAusCookie, sitzungBeenden, sitzungSetzen,
 } from './auth.js';
 import { db } from './db.js';
-import { symbolPng } from './icon.js';
 import { mailRouter } from './mail.js';
 import { pushRouter } from './push.js';
 
@@ -35,21 +34,11 @@ app.get('/manifest.webmanifest', (_req, res) => res.type('application/manifest+j
   id: '/mail', start_url: '/mail', scope: '/', display: 'standalone', orientation: 'any',
   background_color: '#FAFAFB', theme_color: '#FFFFFF', lang: 'de', dir: 'ltr',
   icons: [
-    { src: '/app/icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' },
     { src: '/app/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
     { src: '/app/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
     { src: '/app/icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
   ],
 }));
-// Dieselben Symbole als PNG (iPhone-Home-Bildschirm, Android-Installation)
-const symbol = (groesse, randlos) => (_req, res) => res.type('image/png').set('Cache-Control', 'public, max-age=3600').send(symbolPng(groesse, APP.farbe, randlos));
-app.get('/app/icon-192.png', symbol(192, false));
-app.get('/app/icon-512.png', symbol(512, false));
-app.get('/app/icon-maskable-512.png', symbol(512, true));
-app.get('/app/apple-touch-icon.png', symbol(180, true));
-// Symbol in der Farbe der Installation
-app.get('/app/icon.svg', (_req, res) => res.type('image/svg+xml').set('Cache-Control', 'public, max-age=3600')
-  .send(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="${APP.farbe}"/><g fill="none" stroke="#fff" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"><rect x="104" y="148" width="304" height="216" rx="32"/><path d="m116 172 140 100 140-100"/></g></svg>`));
 app.get('/sw.js', (_req, res) => res.set('Cache-Control', 'no-cache').type('application/javascript').sendFile(join(OEFFENTLICH, 'app/sw.js')));
 app.use('/app', express.static(join(OEFFENTLICH, 'app')));
 app.use('/js', express.static(join(OEFFENTLICH, 'js')));

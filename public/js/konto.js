@@ -163,7 +163,7 @@
         ? `<div class="ok">✓ Mitteilungen sind auf diesem Gerät an.</div><div class="reihe" style="margin-top:10px"><button class="knopf hell" type="button" data-test>Test senden</button><button class="knopf hell" type="button" data-aus>Auf diesem Gerät ausschalten</button></div>`
         : '<p>Neue Mails, Zuweisungen und Erinnerungen direkt aufs Handy – auch wenn die App zu ist.</p><button class="knopf" type="button" data-an>Mitteilungen einschalten</button>';
       box.innerHTML = `<button class="zu" type="button" aria-label="Schließen">×</button>
-        <h2><img src="/app/icon.svg" alt="">Handy-App & Mitteilungen</h2>
+        <h2><img src="/app/icon-192.png" alt="">Handy-App & Mitteilungen</h2>
         <h3>App</h3>${installTeil}
         <h3>Mitteilungen auf diesem Gerät</h3>${pushTeil}
         <h3>Worüber? (gilt für alle deine Geräte)</h3>

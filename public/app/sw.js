@@ -1,10 +1,10 @@
 // Service Worker der App: Push-Mitteilungen anzeigen, beim Antippen die passende Seite öffnen,
 // ohne Netz eine Hinweisseite statt eines Browser-Fehlers. Daten werden nicht zwischengespeichert (immer aktuell vom Server).
-const CACHE = 'sanda-mail-1';
+const CACHE = 'sanda-mail-2';
 const OFFLINE = '/app/offline.html';
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll([OFFLINE, '/app/icon.svg', '/app/badge-96.png'])).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll([OFFLINE, '/app/icon-192.png', '/app/badge-96.png'])).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', (e) => {
   e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim()));
@@ -18,7 +18,7 @@ self.addEventListener('push', (e) => {
   let d = {};
   try { d = e.data ? e.data.json() : {}; } catch { d = { text: e.data && e.data.text() }; }
   e.waitUntil(self.registration.showNotification(d.titel || 'Neue Mitteilung', {
-    body: d.text || '', icon: '/app/icon.svg', badge: '/app/badge-96.png', tag: d.tag, renotify: Boolean(d.tag),
+    body: d.text || '', icon: '/app/icon-192.png', badge: '/app/badge-96.png', tag: d.tag, renotify: Boolean(d.tag),
     data: { url: d.url || '/mail' }, lang: 'de',
   }));
 });
