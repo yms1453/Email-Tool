@@ -1365,7 +1365,7 @@ function darstellung() {
   document.body.classList.toggle('leiste-zu', !E.leiste);
   const dunkel = E.theme === 'dark' || (E.theme === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
   $('themeBtn').innerHTML = ic(dunkel ? 'sun' : 'moon');
-  document.querySelector('meta[name="theme-color"]').content = dunkel ? '#1A1714' : '#FFFFFF';
+  document.querySelector('meta[name="theme-color"]').content = dunkel ? '#16191D' : '#FFFFFF';
 }
 function themeUmschalten() {
   const dunkel = E.theme === 'dark' || (E.theme === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);

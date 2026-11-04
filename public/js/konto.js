@@ -3,39 +3,39 @@
 (function () {
   const css = `
   .konto{position:relative;flex:none}
-  .konto>button{display:flex;align-items:center;gap:8px;border:1px solid #DDD5CC;background:#fff;border-radius:999px;padding:3px 10px 3px 3px;font:600 12px "Plus Jakarta Sans",system-ui,sans-serif;color:#1F1A17;cursor:pointer}
+  .konto>button{display:flex;align-items:center;gap:8px;border:1px solid #D9DCE1;background:#fff;border-radius:999px;padding:3px 10px 3px 3px;font:600 12px "Plus Jakarta Sans",system-ui,sans-serif;color:#111318;cursor:pointer}
   .konto>button:hover{border-color:#B8BEC7}
-  .konto .av{width:26px;height:26px;border-radius:50%;background:#1F1A17;color:#fff;display:grid;place-items:center;font-size:11px;font-weight:800}
-  .konto .pf{font-size:9px;color:#75695F}
-  .konto-menue{position:absolute;left:0;top:calc(100% + 6px);min-width:220px;max-height:calc(100vh - 80px);overflow:auto;background:#fff;border:1px solid #DDD5CC;border-radius:12px;box-shadow:0 10px 30px rgba(40,28,18,.12);padding:6px;z-index:100;display:none}
+  .konto .av{width:26px;height:26px;border-radius:50%;background:#111318;color:#fff;display:grid;place-items:center;font-size:11px;font-weight:800}
+  .konto .pf{font-size:9px;color:#6B7280}
+  .konto-menue{position:absolute;left:0;top:calc(100% + 6px);min-width:220px;max-height:calc(100vh - 80px);overflow:auto;background:#fff;border:1px solid #D9DCE1;border-radius:12px;box-shadow:0 10px 30px rgba(16,24,40,.12);padding:6px;z-index:100;display:none}
   .konto.offen .konto-menue{display:block}
   .konto-menue .wer{padding:8px 10px 10px;border-bottom:1px solid #E5E7EB;margin-bottom:6px}
   .konto-menue .wer b{display:block;font-size:13px}
-  .konto-menue .wer span{display:block;font-size:11px;color:#75695F;margin-top:2px}
+  .konto-menue .wer span{display:block;font-size:11px;color:#6B7280;margin-top:2px}
   .konto-menue button{width:100%;text-align:left;border:0;background:none;padding:9px 10px;border-radius:8px;font:600 13px "Plus Jakarta Sans",system-ui,sans-serif;color:#B42323;cursor:pointer}
   .konto-menue button:hover{background:#FDECEC}
-  .konto-menue button[data-app],.konto-menue a{color:#1F1A17}
+  .konto-menue button[data-app],.konto-menue a{color:#111318}
   .konto-menue button[data-app]:hover,.konto-menue a:hover{background:#F3F4F6}
   .konto-menue a{display:block;padding:9px 10px;border-radius:8px;font:600 13px "Plus Jakarta Sans",system-ui,sans-serif;text-decoration:none}
   .app-box label.feld{display:block;font-size:12px;font-weight:700;margin:10px 0 4px}
-  .app-box input.feld{width:100%;padding:10px 12px;border:1px solid #DDD5CC;border-radius:10px;font:14px inherit}
+  .app-box input.feld{width:100%;padding:10px 12px;border:1px solid #D9DCE1;border-radius:10px;font:14px inherit}
   .app-hg{position:fixed;inset:0;background:rgba(17,19,24,.4);display:grid;place-items:center;z-index:1000;padding:16px}
-  .app-box{background:#fff;color:#1F1A17;border-radius:18px;width:min(440px,100%);max-height:calc(100vh - 32px);overflow:auto;padding:20px;box-shadow:0 24px 60px rgba(0,0,0,.25);font:14px/1.45 "Plus Jakarta Sans",system-ui,sans-serif}
+  .app-box{background:#fff;color:#111318;border-radius:18px;width:min(440px,100%);max-height:calc(100vh - 32px);overflow:auto;padding:20px;box-shadow:0 24px 60px rgba(0,0,0,.25);font:14px/1.45 "Plus Jakarta Sans",system-ui,sans-serif}
   .app-box h2{font-size:18px;font-weight:800;margin:0 0 4px;display:flex;align-items:center;gap:10px}
   .app-box h2 img{width:34px;height:34px;border-radius:9px}
-  .app-box h3{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#75695F;margin:18px 0 8px}
-  .app-box p{margin:0 0 8px;color:#5A4F47}
+  .app-box h3{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#6B7280;margin:18px 0 8px}
+  .app-box p{margin:0 0 8px;color:#4B5563}
   .app-box .zu{float:right;border:0;background:#F2F4F7;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px}
-  .app-box .knopf{border:0;border-radius:10px;padding:10px 16px;font:700 14px "Plus Jakarta Sans",system-ui,sans-serif;cursor:pointer;background:#1F1A17;color:#fff}
-  .app-box .knopf.hell{background:#fff;color:#1F1A17;border:1px solid #DDD5CC}
+  .app-box .knopf{border:0;border-radius:10px;padding:10px 16px;font:700 14px "Plus Jakarta Sans",system-ui,sans-serif;cursor:pointer;background:#111318;color:#fff}
+  .app-box .knopf.hell{background:#fff;color:#111318;border:1px solid #D9DCE1}
   .app-box .knopf:disabled{opacity:.5;cursor:not-allowed}
   .app-box .reihe{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
   .app-box label.thema{display:flex;gap:10px;align-items:center;padding:7px 0;border-top:1px solid #F0F1F3;cursor:pointer}
-  .app-box label.thema input{width:18px;height:18px;accent-color:var(--brand,#6B4630)}
+  .app-box label.thema input{width:18px;height:18px;accent-color:var(--brand,#89CFF0)}
   .app-box .hinweis{background:#FFF1E6;color:#7A3500;border-radius:10px;padding:10px 12px;font-size:13px}
   .app-box .ok{background:#E3F6EA;color:#127A3E;border-radius:10px;padding:10px 12px;font-size:13px}
-  .app-box ol{margin:0 0 8px 18px;padding:0;color:#5A4F47}
-  .app-box .status{font-size:12.5px;color:#75695F;margin-top:8px;min-height:18px}
+  .app-box ol{margin:0 0 8px 18px;padding:0;color:#4B5563}
+  .app-box .status{font-size:12.5px;color:#6B7280;margin-top:8px;min-height:18px}
   /* Handy: der Knopf zeigt die aktuelle App statt des Namens */
   @media (max-width:760px){
     .konto>button{padding:4px 12px 4px 4px;font-size:13px;min-height:36px}
@@ -168,7 +168,7 @@
         <h3>Mitteilungen auf diesem Gerät</h3>${pushTeil}
         <h3>Worüber? (gilt für alle deine Geräte)</h3>
         ${info.themen.map((t) => `<label class="thema"><input type="checkbox" data-thema="${t.id}"${info.meine.includes(t.id) ? ' checked' : ''}>${esc(t.name)}</label>`).join('')}
-        <p style="font-size:12px;color:#A3978C;margin-top:10px">${info.geraete.length ? `Aktiv auf ${info.geraete.length} Gerät${info.geraete.length > 1 ? 'en' : ''}: ${info.geraete.map((g) => esc(g.geraet || 'Gerät')).join(', ')}` : 'Noch auf keinem Gerät eingeschaltet.'}</p>
+        <p style="font-size:12px;color:#9CA3AF;margin-top:10px">${info.geraete.length ? `Aktiv auf ${info.geraete.length} Gerät${info.geraete.length > 1 ? 'en' : ''}: ${info.geraete.map((g) => esc(g.geraet || 'Gerät')).join(', ')}` : 'Noch auf keinem Gerät eingeschaltet.'}</p>
         <div class="status" role="status">${esc(status)}</div>`;
     };
     zeichnen();

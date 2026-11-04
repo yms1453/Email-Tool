@@ -55,7 +55,7 @@ if [ ! -f .env ]; then
   [ -n "$DOMAIN" ] || fehler "Ohne Domain kein HTTPS. Mit DOMAIN=… erneut starten."
   EMAIL="${EMAIL:-$(frage 'E-Mail für Let’s-Encrypt-Zertifikat und Push' "admin@${DOMAIN#*.}")}"
   APP_NAME="${APP_NAME:-$(frage 'Name der App' 'SANDA Mail')}"
-  APP_FARBE="${APP_FARBE:-#6B4630}"
+  APP_FARBE="${APP_FARBE:-#89CFF0}"
   # Geheimnisse hier erzeugen und in .env festhalten – nie wieder ändern, sonst sind die Postfach-Passwörter unlesbar
   umask 077
   cat > .env <<EOF

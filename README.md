@@ -74,7 +74,7 @@ Alle optional, siehe [.env.example](.env.example).
 | Variable | Bedeutung | Standard |
 |---|---|---|
 | `APP_NAME` | Name in der Oberfläche | `SANDA Mail` |
-| `APP_FARBE` | Markenfarbe (Hex) | `#6B4630` |
+| `APP_FARBE` | Markenfarbe (Hex) | `#89CFF0` |
 | `PORT`, `HOST` | Adresse des Servers | `3000`, `0.0.0.0` |
 | `DATA_DIR` | Datenbank, Anhänge, Schlüssel | `./data` (Docker: `/data`) |
 | `JWT_SECRET` | Sitzungs-Geheimnis | wird erzeugt (`DATA_DIR/geheimnis.txt`) |
