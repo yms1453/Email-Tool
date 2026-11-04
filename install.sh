@@ -92,6 +92,33 @@ for _ in $(seq 1 30); do
   sleep 2
 done
 
+# ---------- Tägliche Sicherung (03:30, die letzten 14 bleiben) ----------
+chmod +x scripts/*.sh
+cat > /etc/systemd/system/sanda-mail-sicherung.service <<EOF
+[Unit]
+Description=SANDA Mail sichern
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=${ZIEL}/scripts/sicherung.sh
+EOF
+cat > /etc/systemd/system/sanda-mail-sicherung.timer <<EOF
+[Unit]
+Description=SANDA Mail täglich sichern
+
+[Timer]
+OnCalendar=*-*-* 03:30:00 Europe/Berlin
+RandomizedDelaySec=10m
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+EOF
+systemctl daemon-reload
+systemctl enable --now sanda-mail-sicherung.timer >/dev/null
+
 blau "==> Fertig"
 echo
 echo "  Öffnen:        https://${DOMAIN}"
@@ -100,5 +127,6 @@ echo
 echo "  Update:        dieses Installationsskript erneut ausführen"
 echo "  Logins:        cd ${ZIEL} && docker compose exec sanda-mail node scripts/nutzer.js liste"
 echo "  Logs:          cd ${ZIEL} && docker compose logs -f sanda-mail"
+echo "  Sicherung:     täglich 03:30 nach /var/backups/sanda-mail (sofort: ${ZIEL}/scripts/sicherung.sh)"
 echo
 echo "  Wichtig: ${ZIEL}/.env sicher aufbewahren – ohne JWT_SECRET lassen sich die Postfach-Passwörter nicht mehr lesen."

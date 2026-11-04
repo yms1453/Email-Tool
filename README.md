@@ -99,8 +99,20 @@ mail.firma.de {
 ## Sicherung
 
 Alles Wichtige liegt in `DATA_DIR`: `sanda-mail.db` (+ `-wal`/`-shm`), `mail-anhaenge/`, `geheimnis.txt`, `vapid.json`.
-Zum Sichern den Dienst kurz stoppen und den Ordner kopieren. Ohne `geheimnis.txt` sind die Postfach-Passwörter verloren,
+Ohne `JWT_SECRET` (`.env`) bzw. `geheimnis.txt` sind die Postfach-Passwörter verloren,
 ohne `vapid.json` müssen alle Geräte Mitteilungen neu einschalten.
+
+Mit `install.sh` eingerichtet, sichert der Server sich selbst: täglich um 03:30 nach `/var/backups/sanda-mail/`
+(Datenbank, Anhänge, `vapid.json`, `.env`, `Caddyfile`), die letzten 14 Sicherungen bleiben.
+
+```bash
+/opt/sanda-mail/scripts/sicherung.sh                       # sofort sichern
+systemctl list-timers sanda-mail-sicherung                 # nächster Termin
+/opt/sanda-mail/scripts/wiederherstellen.sh /var/backups/sanda-mail/sanda-mail-2026-11-04-0330.tar.gz
+```
+
+Die Sicherungen liegen auf demselben Server – gegen den Verlust des ganzen Servers zusätzlich eine Kopie
+an einem anderen Ort ablegen (z. B. IONOS-Backup oder Speicher bei einem anderen Anbieter).
 
 ## Aufbau
 
