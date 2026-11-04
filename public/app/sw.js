@@ -1,6 +1,6 @@
 // Service Worker der App: Push-Mitteilungen anzeigen, beim Antippen die passende Seite öffnen,
 // ohne Netz eine Hinweisseite statt eines Browser-Fehlers. Daten werden nicht zwischengespeichert (immer aktuell vom Server).
-const CACHE = 'sanda-mail-2';
+const CACHE = 'sanda-mail-3';
 const OFFLINE = '/app/offline.html';
 
 self.addEventListener('install', (e) => {

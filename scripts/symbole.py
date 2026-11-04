@@ -37,9 +37,9 @@ def speichern(bild, name):
     bild.save(f'{ziel}/{name}', optimize=True)
 
 
-speichern(symbol(192, 0.80), 'icon-192.png')
-speichern(symbol(512, 0.80), 'icon-512.png')
-speichern(symbol(512, 0.68), 'icon-maskable-512.png')    # innerhalb der Sicherheitszone (Kreis, 80 %)
-speichern(symbol(180, 0.76), 'apple-touch-icon.png')
-speichern(symbol(32, 0.92, dicker=5), 'favicon-32.png')   # Linien verstärkt, sonst bei 32 px unsichtbar
-speichern(symbol(96, 0.88, None, WEISS, dicker=5), 'badge-96.png')  # Mitteilungs-Symbol: nur Form, weiß auf transparent
+speichern(symbol(192, 0.92), 'icon-192.png')
+speichern(symbol(512, 0.92), 'icon-512.png')
+speichern(symbol(512, 0.74), 'icon-maskable-512.png')    # innerhalb der Sicherheitszone (Kreis, 80 %)
+speichern(symbol(180, 0.90), 'apple-touch-icon.png')
+speichern(symbol(32, 0.96, dicker=5), 'favicon-32.png')   # Linien verstärkt, sonst bei 32 px unsichtbar
+speichern(symbol(96, 0.94, None, WEISS, dicker=5), 'badge-96.png')  # Mitteilungs-Symbol: nur Form, weiß auf transparent
