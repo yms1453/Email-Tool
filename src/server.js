@@ -32,7 +32,7 @@ app.get('/api/app', (_req, res) => res.json({ name: APP.name, farbe: APP.farbe, 
 app.get('/manifest.webmanifest', (_req, res) => res.type('application/manifest+json').json({
   name: APP.name, short_name: APP.name, description: 'Gemeinsame Postfächer fürs Team',
   id: '/mail', start_url: '/mail', scope: '/', display: 'standalone', orientation: 'any',
-  background_color: '#FAFAFB', theme_color: '#FFFFFF', lang: 'de', dir: 'ltr',
+  background_color: '#F7F3EE', theme_color: '#FFFFFF', lang: 'de', dir: 'ltr',
   icons: [
     { src: '/app/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
     { src: '/app/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },

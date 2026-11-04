@@ -21,7 +21,7 @@ if (!env.JWT_SECRET?.trim()) {
 const farbe = `#${String(env.APP_FARBE || '').trim().replace(/^#/, '')}`;
 export const APP = {
   name: env.APP_NAME || 'SANDA Mail',
-  farbe: /^#[0-9a-f]{6}$/i.test(farbe) ? farbe : '#2563EB',
+  farbe: /^#[0-9a-f]{6}$/i.test(farbe) ? farbe : '#6B4630',
   port: Number(env.PORT || 3000),
   host: env.HOST || '0.0.0.0',
   // hinter HTTPS (Reverse-Proxy) auf true setzen → Cookie nur über HTTPS; ohne HTTPS (lokal, im LAN) aus lassen
